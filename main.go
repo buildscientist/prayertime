@@ -9,8 +9,21 @@ func main() {
 }
 
 //Trigonometric Helpers
+
+func radiansToDegrees(radians float64) (degrees float64) {
+	return (radians * 180) / math.Pi
+}
+
+func degreesToRadians(degrees float64) (radians float64) {
+	return (degrees * math.Pi) / 180
+}
+
 func fix(value, mode float64) (a float64) {
 	value = value - mode*(math.Floor(value/mode))
+
+	if value < 0 {
+		return value + mode
+	}
 	return value
 }
 

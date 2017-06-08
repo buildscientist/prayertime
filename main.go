@@ -4,11 +4,43 @@ import "math"
 import "fmt"
 
 func main() {
-	var x = 90 * (math.Pi / 180)
-	fmt.Println(math.Sin(x))
+	fmt.Println(math.Sin(degreesToRadians(90)))
 }
 
 //Trigonometric Helpers
+
+func degreeSin(degrees float64) (sinDegrees float64) {
+	return math.Sin(degreesToRadians(degrees))
+}
+
+func degreeCos(degrees float64) (cosDegrees float64) {
+	return math.Cos(degreesToRadians(degrees))
+}
+
+func degreeTan(degrees float64) (tanDegrees float64) {
+	return math.Tan(degreesToRadians(degrees))
+}
+
+func degreeArcSin(degrees float64) (arcSinDegrees float64) {
+	return radiansToDegrees(math.Asin(degrees))
+}
+
+func degreeArcCos(degrees float64) (arcCosDegrees float64) {
+	return radiansToDegrees(math.Acos(degrees))
+}
+
+func degreeArcTan(degrees float64) (arcTanDegrees float64) {
+	return radiansToDegrees(math.Atan(degrees))
+}
+
+func degreeArcTan2(degreeA,degreeB float64) (arcTan2Degrees float64) {
+	return radiansToDegrees(math.Atan2(degreeA,degreeB))
+}
+
+func degreeArcCot(degrees float64) (arcCotDegrees float64) {
+	return radiansToDegrees(math.Atan2(1.0,degrees))
+}
+
 
 func radiansToDegrees(radians float64) (degrees float64) {
 	return (radians * 180) / math.Pi

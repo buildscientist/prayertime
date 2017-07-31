@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/go,osx,visualstudiocode
 
 ### Go ###
@@ -7,6 +6,7 @@
 *.dll
 *.so
 *.dylib
+bin/*
 
 # Test binary, build with `go test -c`
 *.test

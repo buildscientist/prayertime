@@ -1,5 +1,13 @@
 package praytime
 
+//Prayer Times
+const FAJR string = "fajr"
+const DHUHR string = "dhuhr"
+const ASR string = "asr"
+const MAGHRIB string = "maghrib"
+const ISHA string = "isha"
+
+
 //Location based calculation methods
 const JAFARI int = 0
 const KARACHI int = 1 
@@ -13,7 +21,9 @@ const CUSTOM int = 7
 
 //Juristic Methods
 const SHAFII int = 0
-const  HANAFI int = 1
+const HANAFI int = 1
+const DHUHR_MINUTES int = 0
+
 
 //Adjustments for higher altitudes
 const  NONE int = 0
@@ -25,3 +35,5 @@ const  ANGLE_BASED int = 3
 const TIME_24 int = 0
 const TIME_12 int = 1
 const TIME_12_NO_SUFFIX int = 3
+
+const NUMBER_OF_ITERATIONS int = 1

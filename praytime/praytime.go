@@ -1,11 +1,11 @@
 package praytime
 
-import(
-	"math"
-	"time"
-	"strconv"
-	"github.com/buildscientist/prayertime/trig"
+import (
 	"github.com/buildscientist/prayertime/julian"
+	"github.com/buildscientist/prayertime/trig"
+	"math"
+	"strconv"
+	"time"
 )
 
 type PrayTime struct {
@@ -18,7 +18,7 @@ var prayerTimeNames = []string{FAJR, "Sunrise", DHUHR, ASR, "Sunset", MAGHRIB, I
 var julianDate float64
 var invalidTime string
 var prayerTimesCurrent []float64
-var offSets = [7]int{0, 0, 0, 0, 0, 0, 0}
+var offsets = [7]int{0, 0, 0, 0, 0, 0, 0}
 
 func init() {
 	//Prayer Time Method Parameters
@@ -101,9 +101,7 @@ func getDatePrayerTimes(prayTime *PrayTime, year, month, day int) []string {
 	julianDate = julian.ConvertFromGregToJul(year, month, day)
 	var longitudinalDiff = prayTime.longitude / (15.0 * 24.0)
 	julianDate = julianDate - longitudinalDiff
-
-	//TODO: return computeDayTimes()
-	return []string{"1"}
+	return ComputeDayTimes(prayTime)
 }
 
 func getPrayerTimes(prayTime *PrayTime, today time.Time) []string {
@@ -115,7 +113,7 @@ func getPrayerTimes(prayTime *PrayTime, today time.Time) []string {
 
 func setCustomParams(params []float64) {
 	for x := 0; x < 5; x++ {
-		if(params[x] ==  -1) {
+		if params[x] == -1 {
 			params[x] = methodParams[prayerCalcMethod][x]
 			methodParams[CUSTOM] = params
 		} else {
@@ -126,71 +124,225 @@ func setCustomParams(params []float64) {
 	prayerCalcMethod = CUSTOM
 }
 
-
-/* func setPrayerAngle(prayerName string, angle float64) {
+func setPrayerAngle(prayerName string, angle float64) {
 	switch {
-		case prayerName == FAJR:
-			setCustomParams([]float64{angle, -1, -1, -1, -1})
-		
-		case prayerName == MAGHRIB:
-			setCustomParams([]float64{-1, 0, angle, -1, -1})
+	case prayerName == FAJR:
+		setCustomParams([]float64{angle, -1, -1, -1, -1})
 
-		case prayerName == ISHA:
-			setCustomParams([]float64{-1, -1, -1, 0, angle})
+	case prayerName == MAGHRIB:
+		setCustomParams([]float64{-1, 0, angle, -1, -1})
+
+	case prayerName == ISHA:
+		setCustomParams([]float64{-1, -1, -1, 0, angle})
 	}
 
-} */
-
-
-func setFajrAngle(angle float64) {
-	var params = []float64{angle, -1, -1, -1, -1}
-	setCustomParams(params)
 }
 
-func setMaghribAngle(angle float64) {
-	var params = []float64{-1, 0, angle, -1, -1}
-	setCustomParams(params)
+func setPrayerMinutes(prayerName string, minutes float64) {
+	switch {
+	case prayerName == MAGHRIB:
+		setCustomParams([]float64{-1, 1, minutes, -1, -1})
+
+	case prayerName == ISHA:
+		setCustomParams([]float64{-1, -1, -1, 1, minutes})
+	}
 }
 
-func setIshaAngle(angle float64) {
-	var params = []float64{-1, -1, -1, 0, angle}
-	setCustomParams(params)
-}
-
-func setMaghribMinute(minutes float64) {
-	var params = []float64{-1, 1, minutes, -1, -1}
-	setCustomParams(params)
-}
-
-func setIshaMinutes(minutes float64) {
-	var params = []float64{-1, -1, -1, 1, minutes}
-	setCustomParams(params)
-}
-
-func floatToTime24(time float64) string {
-	var result string
-
-	if(math.IsNaN(time)) {
+func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
+	if math.IsNaN(time) {
 		return invalidTime
 	}
 
-	time = trig.FixHour(time + 0.5 / 60.0)
+	var result, suffix string
+
+	time = trig.FixHour(time + 0.5/60.0)
 	var hours = int(math.Floor(time))
 	var minutes = math.Floor((time - float64(hours)) * 60.0)
 
-	switch {
-		case (hours >= 0 && hours <= 9) && (minutes >= 0  &&  minutes <= 9):
+	if hours >= 12 {
+		suffix = "PM"
+	} else {
+		suffix = "AM"
+	}
+
+	if twentyFourHourFormat {
+		hours = ((((hours + 12) - 1) % (12)) + 1)
+	}
+
+	if useSuffix {
+		switch {
+		case (hours >= 0 && hours <= 9) && (minutes >= 0 && minutes <= 9):
+			result = "0" + strconv.Itoa(hours) + ":0" + strconv.Itoa(int(minutes)) + " " + suffix
+
+		case (hours >= 0 && hours <= 9):
+			result = "0" + strconv.Itoa(hours) + ":" + strconv.Itoa(int(minutes)) + " " + suffix
+
+		case (minutes >= 0 && minutes <= 9):
+			result = strconv.Itoa(hours) + ":0" + strconv.Itoa(int(minutes)) + " " + suffix
+
+		default:
+			result = strconv.Itoa(hours) + ":" + strconv.Itoa(int(minutes)) + " " + suffix
+		}
+
+	} else {
+		switch {
+		case (hours >= 0 && hours <= 9) && (minutes >= 0 && minutes <= 9):
 			result = "0" + strconv.Itoa(hours) + ":0" + strconv.Itoa(int(minutes))
-		
+
 		case (hours >= 0 && hours <= 9):
 			result = "0" + strconv.Itoa(hours) + ":" + strconv.Itoa(int(minutes))
 
 		case (minutes >= 0 && minutes <= 9):
 			result = strconv.Itoa(hours) + ":0" + strconv.Itoa(int(minutes))
-		
+
 		default:
 			result = strconv.Itoa(hours) + ":" + strconv.Itoa(int(minutes))
+		}
 	}
 
 	return result
+}
+
+func dayPortion(times []float64) []float64 {
+	for x := 0; x < 7; x++ {
+		times[x] /= 24
+	}
+	return times
+}
+
+func computePrayerTime(prayTime *PrayTime, times []float64) []float64 {
+	var time = dayPortion(times)
+	var angle = 180 - methodParams[prayerCalcMethod][0]
+	var fajr = computeTime(prayTime, angle, time[0])
+	var sunrise = computeTime(prayTime, 180-0.833, time[1])
+	var dhuhr = computeMidDay(time[2])
+	var asr = computeAsr(prayTime, float64(1+asrJuristic), time[3])
+	var sunset = computeTime(prayTime, 0.833, time[4])
+	var maghrib = computeTime(prayTime, methodParams[prayerCalcMethod][2], time[5])
+	var isha = computeTime(prayTime, methodParams[prayerCalcMethod][4], time[6])
+
+	var computedPrayerTimes = []float64{fajr, sunrise, dhuhr, asr, sunset, maghrib, isha}
+
+	return computedPrayerTimes
+}
+
+func adjustTimes(prayTime *PrayTime, times []float64) []float64 {
+	for x := 0; x < len(times); x++ {
+		times[x] = prayTime.timezone - prayTime.longitude/15
+	}
+
+	times[2] = float64(DHUHR_MINUTES / 60)
+
+	switch {
+	case methodParams[prayerCalcMethod][1] == 1:
+		times[5] = times[4] + methodParams[prayerCalcMethod][2]/60
+
+	case methodParams[prayerCalcMethod][3] == 1:
+		times[6] = times[5] + methodParams[prayerCalcMethod][4]/60
+
+	case adjustHighLats != 0:
+		times = adjustHighLatTimes(times)
+	}
+
+	return times
+}
+
+// Adjust Fajr, Isha and Maghrib for locations in higher latitudes
+func adjustHighLatTimes(times []float64) []float64 {
+	var nightTime = timeDifference(times[4], times[1])
+	var fajrDiff = nightPortion(methodParams[prayerCalcMethod][0] * nightTime)
+
+	if math.IsNaN(times[0]) || timeDifference(times[0], times[1]) > fajrDiff {
+		times[0] = times[1] - fajrDiff
+	}
+
+	var ishaAngle float64
+	if methodParams[prayerCalcMethod][3] == 0 {
+		ishaAngle = methodParams[prayerCalcMethod][4]
+	} else {
+		ishaAngle = 18.0
+	}
+	var ishaDiff = nightPortion(ishaAngle) * nightTime
+
+	if math.IsNaN(times[6]) || timeDifference(times[4], times[6]) > ishaDiff {
+		times[6] = times[4] + ishaDiff
+	}
+
+	var maghribAngle float64
+	if methodParams[prayerCalcMethod][1] == 0 {
+		maghribAngle = methodParams[prayerCalcMethod][2]
+	} else {
+		maghribAngle = 4.0
+	}
+	var maghribDiff = nightPortion(maghribAngle) * nightTime
+
+	if math.IsNaN(times[5]) || timeDifference(times[4], times[5]) > maghribDiff {
+		times[5] = times[4] + maghribDiff
+	}
+
+	return times
+}
+
+func nightPortion(angle float64) float64 {
+	var calc = 0.0
+	switch {
+	case adjustHighLats == ANGLE_BASED:
+		calc = angle / 60.0
+	case adjustHighLats == MIDNIGHT:
+		calc = 0.5
+
+	case adjustHighLats == ONE_SEVENTH:
+		calc = 0.14286
+	}
+	return calc
+}
+
+func tune(offsetTimes []int) {
+	for x := 0; x <= len(offsetTimes); x++ {
+		offsets[x] = offsetTimes[x]
+	}
+}
+
+func tuneTimes(times []float64) []float64 {
+	for x := 0; x <= len(times); x++ {
+		times[x] = times[x] + float64(offsets[x]/60.0)
+	}
+	return times
+}
+
+func adjustTimesFormat(times []float64) []string {
+	var result []string
+	if timeFormat == 3 {
+		for index := range times {
+			result = append(result, strconv.FormatFloat(times[index], 'f', -1, 64))
+		}
+		return result
+	}
+
+	for x := 0; x < 7; x++ {
+		switch {
+		case timeFormat == TIME_12:
+			result = append(result, floatToTime(times[x], false, false))
+
+		case timeFormat == TIME_12_NO_SUFFIX:
+			result = append(result, floatToTime(times[x], true, false))
+
+		default:
+			result = append(result, floatToTime(times[x], false, true))
+		}
+	}
+	return result
+}
+
+func ComputeDayTimes(prayTime *PrayTime) []string {
+	var times = []float64{5, 6, 12, 13, 18, 18, 18}
+
+	for x := 1; x <= NUMBER_OF_ITERATIONS; x++ {
+		times = computePrayerTime(prayTime, times)
+	}
+
+	times = adjustTimes(prayTime, times)
+	times = tuneTimes(times)
+
+	return adjustTimesFormat(times)
 }

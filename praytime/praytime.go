@@ -8,17 +8,12 @@ import (
 	"time"
 )
 
-type PrayTime struct {
-	latitude, longitude, timezone float64
-}
-
 var methodParams = make(map[int][]float64)
-var prayerCalcMethod, asrJuristic, adjustHighLats, timeFormat int
-var prayerTimeNames = []string{FAJR, "Sunrise", DHUHR, ASR, "Sunset", MAGHRIB, ISHA}
+var PrayerCalcMethod, AsrJuristic, AdjustHighLats, TimeFormat int
+var PrayerTimeNames = []string{FAJR, "Sunrise", DHUHR, ASR, "Sunset", MAGHRIB, ISHA}
 var julianDate float64
-var invalidTime string
 var prayerTimesCurrent []float64
-var offsets = [7]int{0, 0, 0, 0, 0, 0, 0}
+var Offsets = [7]int{0, 0, 0, 0, 0, 0, 0}
 
 func init() {
 	//Prayer Time Method Parameters
@@ -31,15 +26,18 @@ func init() {
 	methodParams[TEHRAN] = []float64{17.7, 0, 4.5, 0, 14}
 	methodParams[CUSTOM] = []float64{18, 1, 0, 0, 17}
 
-	prayerCalcMethod = 0
-	asrJuristic = 0
-	adjustHighLats = 1
-	timeFormat = 0
-	invalidTime = "-----"
+	PrayerCalcMethod = ISNA
+	AsrJuristic = SHAFII
+	AdjustHighLats = NONE
+	TimeFormat = TIME_24
 }
 
-func New(latitude, longitude, timezone float64) PrayTime {
-	return PrayTime{latitude, longitude, timezone}
+type PrayerLocale struct {
+	latitude, longitude, timezone float64
+}
+
+func New(latitude, longitude, timezone float64) PrayerLocale {
+	return PrayerLocale{latitude, longitude, timezone}
 }
 
 //Prayer Time Calculation functions
@@ -74,7 +72,7 @@ func computeMidDay(time float64) float64 {
 	return trig.FixHour(12 - currentTime)
 }
 
-func computeTime(prayTime *PrayTime, angle, time float64) float64 {
+func computeTime(prayTime *PrayerLocale, angle, time float64) float64 {
 	var D = sunDeclination(julianDate) + time
 	var Z = computeMidDay(time)
 	var beg = -trig.DegreeSin(angle) - trig.DegreeSin(D)*trig.DegreeSin(prayTime.latitude)
@@ -87,7 +85,7 @@ func computeTime(prayTime *PrayTime, angle, time float64) float64 {
 	return Z + v
 }
 
-func computeAsr(prayTime *PrayTime, step, time float64) float64 {
+func computeAsr(prayTime *PrayerLocale, step, time float64) float64 {
 	var D = sunDeclination(julianDate + time)
 	var G = -trig.DegreeArcCot(step + trig.DegreeTan(math.Abs(prayTime.latitude-D)))
 	return computeTime(prayTime, G, time)
@@ -97,14 +95,14 @@ func timeDifference(timeOne, timeTwo float64) float64 {
 	return trig.FixHour(timeTwo - timeOne)
 }
 
-func getDatePrayerTimes(prayTime *PrayTime, year, month, day int) []string {
+func getDatePrayerTimes(prayTime *PrayerLocale, year, month, day int) []string {
 	julianDate = julian.ConvertFromGregToJul(year, month, day)
 	var longitudinalDiff = prayTime.longitude / (15.0 * 24.0)
 	julianDate = julianDate - longitudinalDiff
-	return ComputeDayTimes(prayTime)
+	return computeDayTimes(prayTime)
 }
 
-func getPrayerTimes(prayTime *PrayTime, today time.Time) []string {
+func CalculatePrayerTimes(prayTime *PrayerLocale, today time.Time) []string {
 	var year = today.Year()
 	var month = int(today.Month())
 	var day = today.Day()
@@ -114,14 +112,14 @@ func getPrayerTimes(prayTime *PrayTime, today time.Time) []string {
 func setCustomParams(params []float64) {
 	for x := 0; x < 5; x++ {
 		if params[x] == -1 {
-			params[x] = methodParams[prayerCalcMethod][x]
+			params[x] = methodParams[PrayerCalcMethod][x]
 			methodParams[CUSTOM] = params
 		} else {
 			methodParams[CUSTOM][x] = params[x]
 		}
 
 	}
-	prayerCalcMethod = CUSTOM
+	PrayerCalcMethod = CUSTOM
 }
 
 func setPrayerAngle(prayerName string, angle float64) {
@@ -150,7 +148,7 @@ func setPrayerMinutes(prayerName string, minutes float64) {
 
 func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
 	if math.IsNaN(time) {
-		return invalidTime
+		return INVALID_TIME
 	}
 
 	var result, suffix string
@@ -210,37 +208,37 @@ func dayPortion(times []float64) []float64 {
 	return times
 }
 
-func computePrayerTime(prayTime *PrayTime, times []float64) []float64 {
+func computePrayerTime(prayTime *PrayerLocale, times []float64) []float64 {
 	var time = dayPortion(times)
-	var angle = 180 - methodParams[prayerCalcMethod][0]
+	var angle = 180 - methodParams[PrayerCalcMethod][0]
 	var fajr = computeTime(prayTime, angle, time[0])
 	var sunrise = computeTime(prayTime, 180-0.833, time[1])
 	var dhuhr = computeMidDay(time[2])
-	var asr = computeAsr(prayTime, float64(1+asrJuristic), time[3])
+	var asr = computeAsr(prayTime, float64(1+AsrJuristic), time[3])
 	var sunset = computeTime(prayTime, 0.833, time[4])
-	var maghrib = computeTime(prayTime, methodParams[prayerCalcMethod][2], time[5])
-	var isha = computeTime(prayTime, methodParams[prayerCalcMethod][4], time[6])
+	var maghrib = computeTime(prayTime, methodParams[PrayerCalcMethod][2], time[5])
+	var isha = computeTime(prayTime, methodParams[PrayerCalcMethod][4], time[6])
 
 	var computedPrayerTimes = []float64{fajr, sunrise, dhuhr, asr, sunset, maghrib, isha}
 
 	return computedPrayerTimes
 }
 
-func adjustTimes(prayTime *PrayTime, times []float64) []float64 {
+func adjustTimes(prayTime *PrayerLocale, times []float64) []float64 {
 	for x := 0; x < len(times); x++ {
-		times[x] = prayTime.timezone - prayTime.longitude/15
+		times[x] = times[x] + (prayTime.timezone - (prayTime.longitude/15))
 	}
 
-	times[2] = float64(DHUHR_MINUTES / 60)
+	times[2] = times[2] + float64(DHUHR_MINUTES / 60)
 
 	switch {
-	case methodParams[prayerCalcMethod][1] == 1:
-		times[5] = times[4] + methodParams[prayerCalcMethod][2]/60
+	case methodParams[PrayerCalcMethod][1] == 1:
+		times[5] = times[4] + methodParams[PrayerCalcMethod][2]/60
 
-	case methodParams[prayerCalcMethod][3] == 1:
-		times[6] = times[5] + methodParams[prayerCalcMethod][4]/60
+	case methodParams[PrayerCalcMethod][3] == 1:
+		times[6] = times[5] + methodParams[PrayerCalcMethod][4]/60
 
-	case adjustHighLats != 0:
+	case AdjustHighLats != 0:
 		times = adjustHighLatTimes(times)
 	}
 
@@ -250,15 +248,15 @@ func adjustTimes(prayTime *PrayTime, times []float64) []float64 {
 // Adjust Fajr, Isha and Maghrib for locations in higher latitudes
 func adjustHighLatTimes(times []float64) []float64 {
 	var nightTime = timeDifference(times[4], times[1])
-	var fajrDiff = nightPortion(methodParams[prayerCalcMethod][0] * nightTime)
+	var fajrDiff = nightPortion(methodParams[PrayerCalcMethod][0] * nightTime)
 
 	if math.IsNaN(times[0]) || timeDifference(times[0], times[1]) > fajrDiff {
 		times[0] = times[1] - fajrDiff
 	}
 
 	var ishaAngle float64
-	if methodParams[prayerCalcMethod][3] == 0 {
-		ishaAngle = methodParams[prayerCalcMethod][4]
+	if methodParams[PrayerCalcMethod][3] == 0 {
+		ishaAngle = methodParams[PrayerCalcMethod][4]
 	} else {
 		ishaAngle = 18.0
 	}
@@ -269,8 +267,8 @@ func adjustHighLatTimes(times []float64) []float64 {
 	}
 
 	var maghribAngle float64
-	if methodParams[prayerCalcMethod][1] == 0 {
-		maghribAngle = methodParams[prayerCalcMethod][2]
+	if methodParams[PrayerCalcMethod][1] == 0 {
+		maghribAngle = methodParams[PrayerCalcMethod][2]
 	} else {
 		maghribAngle = 4.0
 	}
@@ -286,33 +284,33 @@ func adjustHighLatTimes(times []float64) []float64 {
 func nightPortion(angle float64) float64 {
 	var calc = 0.0
 	switch {
-	case adjustHighLats == ANGLE_BASED:
+	case AdjustHighLats == ANGLE_BASED:
 		calc = angle / 60.0
-	case adjustHighLats == MIDNIGHT:
+	case AdjustHighLats == MIDNIGHT:
 		calc = 0.5
 
-	case adjustHighLats == ONE_SEVENTH:
+	case AdjustHighLats == ONE_SEVENTH:
 		calc = 0.14286
 	}
 	return calc
 }
 
 func tune(offsetTimes []int) {
-	for x := 0; x <= len(offsetTimes); x++ {
-		offsets[x] = offsetTimes[x]
+	for x := 0; x < len(offsetTimes); x++ {
+		Offsets[x] = offsetTimes[x]
 	}
 }
 
 func tuneTimes(times []float64) []float64 {
-	for x := 0; x <= len(times); x++ {
-		times[x] = times[x] + float64(offsets[x]/60.0)
+	for x := 0; x < len(times); x++ {
+		times[x] = times[x] + float64(Offsets[x]/60.0)
 	}
 	return times
 }
 
 func adjustTimesFormat(times []float64) []string {
 	var result []string
-	if timeFormat == 3 {
+	if TimeFormat == 3 {
 		for index := range times {
 			result = append(result, strconv.FormatFloat(times[index], 'f', -1, 64))
 		}
@@ -321,11 +319,11 @@ func adjustTimesFormat(times []float64) []string {
 
 	for x := 0; x < 7; x++ {
 		switch {
-		case timeFormat == TIME_12:
-			result = append(result, floatToTime(times[x], false, false))
-
-		case timeFormat == TIME_12_NO_SUFFIX:
+		case TimeFormat == TIME_12:
 			result = append(result, floatToTime(times[x], true, false))
+
+		case TimeFormat == TIME_12_NO_SUFFIX:
+			result = append(result, floatToTime(times[x], false, false))
 
 		default:
 			result = append(result, floatToTime(times[x], false, true))
@@ -334,7 +332,7 @@ func adjustTimesFormat(times []float64) []string {
 	return result
 }
 
-func ComputeDayTimes(prayTime *PrayTime) []string {
+func computeDayTimes(prayTime *PrayerLocale) []string {
 	var times = []float64{5, 6, 12, 13, 18, 18, 18}
 
 	for x := 1; x <= NUMBER_OF_ITERATIONS; x++ {

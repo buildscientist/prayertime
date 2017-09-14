@@ -37,3 +37,4 @@ const TIME_12 int = 1
 const TIME_12_NO_SUFFIX int = 2
 
 const NUMBER_OF_ITERATIONS int = 1
+const INVALID_TIME string = "-----"

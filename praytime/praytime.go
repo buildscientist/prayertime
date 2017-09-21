@@ -153,10 +153,6 @@ func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
 	var hours = int(math.Floor(time))
 	var minutes = math.Floor((time - float64(hours)) * 60.0)
 
-	if twentyFourHourFormat {
-		hours = (((hours + 12) - 1) % 12) + 1 //Note the order of operations
-	}
-
 	if useSuffix {
 		switch {
 		case hours >= 12:
@@ -194,6 +190,10 @@ func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
 
 		default:
 			result = strconv.Itoa(hours) + ":" + strconv.Itoa(int(minutes))
+		}
+
+		if !twentyFourHourFormat {
+			hours = (((hours + 12) - 1) % 12) + 1 //Note the order of operations
 		}
 	}
 

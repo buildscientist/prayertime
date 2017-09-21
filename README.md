@@ -16,8 +16,8 @@ The PrayerLocale struct is defined as follows:
 
 ```go
 type PrayerLocale struct {
-	latitude, longitude, timezone         float64
-	PrayerCalcMethod, AsrJuristic, AdjustHighLats, TimeFormat int
+	latitude, longitude, timezone float64
+	PrayerCalcMethod,AsrJuristic,AdjustHighLats,TimeFormat int
 }
 ```
 
@@ -39,20 +39,19 @@ The other parameters are not required and are preset at instantiation including:
 package main 
 
 import (
-	"fmt"
-    "time"
-	"github.com/buildscientist/prayertime/praytime"
+     "fmt"
+     "time"
+     "github.com/buildscientist/prayertime/praytime"
 ) 
 
-    name,offset := time.Now().Zone()
-    offset = offset/3600
+	name,offset := time.Now().Zone()
+	offset = offset/3600
 
 	var chicago = praytime.New(41.879626, -87.648217,offset)
-
 	var chicagoPrayerTime = praytime.CalculatePrayerTimes(&chicago, time.Now())
 
 func printPrayerTimes(city string, prayertimes []string) {
-	var today = time.Now()
+ 	var today = time.Now()
 	fmt.Println()
 	fmt.Println("=======" + city + "=======")
 	fmt.Println(today.Month(), today.Day(), today.Year())

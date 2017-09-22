@@ -45,9 +45,10 @@ import (
 ) 
 
 	name,offset := time.Now().Zone()
-	offset = offset/3600
+	name = name 
+	timezone = float64(offset/3600)
 
-	var chicago = praytime.New(41.879626, -87.648217,offset)
+	var chicago = praytime.New(41.879626, -87.648217,timezone)
 	var chicagoPrayerTime = praytime.CalculatePrayerTimes(&chicago, time.Now())
 
 func printPrayerTimes(city string, prayertimes []string) {

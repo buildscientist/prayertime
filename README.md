@@ -9,6 +9,14 @@ Full details as to the overall prayer calculation algorithm are available on the
 1. Go (v1.7 of above) installed on target workstation.
 1. [GOPATH](https://github.com/golang/go/wiki/Setting-GOPATH) environment variable set correctly.
 ---
+## Installation 
+
+```go
+go get github.com/buildscientist/prayertime 
+```
+
+---
+
 ## API
 The PrayTime Go API is fairly simple to use - the user does not need to understand the underlying calculations to use the library. 
 

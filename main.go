@@ -21,15 +21,18 @@ func main() {
 
 	helsinki.TimeFormat = praytime.TIME_24
 	helsinki.PrayerCalcMethod = praytime.MWL
-	helsinki.AdjustHighLats = praytime.ANGLE_BASED
+	helsinki.AdjustHighLats = praytime.ONE_SEVENTH
 	helsinki.AsrJuristic = praytime.HANAFI
 
 	toronto.TimeFormat = praytime.TIME_24
 	toronto.AdjustHighLats = praytime.ANGLE_BASED
 	toronto.AsrJuristic = praytime.HANAFI
+	toronto.PrayerCalcMethod = praytime.ISNA
 
 	chicago.TimeFormat = praytime.TIME_12_NO_SUFFIX
+
 	sandiego.TimeFormat = praytime.TIME_12
+	sandiego.PrayerCalcMethod = praytime.ISNA
 
 	var helsinkiPrayerTime = praytime.CalculatePrayerTimes(&helsinki, time.Now())
 	var torontoPrayerTime = praytime.CalculatePrayerTimes(&toronto, time.Now())

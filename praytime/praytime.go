@@ -76,7 +76,7 @@ func computeMidDay(time float64) float64 {
 }
 
 func computeTime(prayTime *PrayerLocale, angle, time float64) float64 {
-	var D = sunDeclination(julianDate) + time
+	var D = sunDeclination(julianDate + time)
 	var Z = computeMidDay(time)
 	var beg = -trig.DegreeSin(angle) - trig.DegreeSin(D)*trig.DegreeSin(prayTime.latitude)
 	var mid = trig.DegreeCos(D) * trig.DegreeCos(prayTime.latitude)
@@ -169,6 +169,10 @@ func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
 			suffix = "AM"
 		}
 
+		if !twentyFourHourFormat {
+			hours = (((hours + 12) - 1) % 12) + 1 //Note the order of operations
+		}
+
 		switch {
 		case (hours >= 0 && hours <= 9) && (minutes >= 0 && minutes <= 9):
 			result = "0" + strconv.Itoa(hours) + ":0" + strconv.Itoa(int(minutes)) + " " + suffix
@@ -185,6 +189,9 @@ func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
 
 	} else {
 
+		if !twentyFourHourFormat {
+			hours = (((hours + 12) - 1) % 12) + 1 //Note the order of operations
+		}
 		switch {
 		case (hours >= 0 && hours <= 9) && (minutes >= 0 && minutes <= 9):
 			result = "0" + strconv.Itoa(hours) + ":0" + strconv.Itoa(int(minutes))
@@ -199,9 +206,6 @@ func floatToTime(time float64, useSuffix, twentyFourHourFormat bool) string {
 			result = strconv.Itoa(hours) + ":" + strconv.Itoa(int(minutes))
 		}
 
-		if !twentyFourHourFormat {
-			hours = (((hours + 12) - 1) % 12) + 1 //Note the order of operations
-		}
 	}
 
 	return result
@@ -237,24 +241,24 @@ func adjustTimes(prayTime *PrayerLocale, times []float64) []float64 {
 
 	times[2] = times[2] + float64(DHUHR_MINUTES/60)
 
-	switch {
-	case methodParams[prayTime.PrayerCalcMethod][1] == 1:
+	if methodParams[prayTime.PrayerCalcMethod][1] == 1 {
 		times[5] = times[4] + methodParams[prayTime.PrayerCalcMethod][2]/60
-
-	case methodParams[prayTime.PrayerCalcMethod][3] == 1:
-		times[6] = times[5] + methodParams[prayTime.PrayerCalcMethod][4]/60
-
-	case prayTime.AdjustHighLats != 0:
-		times = adjustHighLatTimes(times, prayTime)
 	}
 
+	if methodParams[prayTime.PrayerCalcMethod][3] == 1 {
+		times[6] = times[5] + methodParams[prayTime.PrayerCalcMethod][4]/60
+	}
+
+	if prayTime.AdjustHighLats != 0 {
+		times = adjustHighLatTimes(times, prayTime)
+	}
 	return times
 }
 
 // Adjust Fajr, Isha and Maghrib for locations in higher latitudes
 func adjustHighLatTimes(times []float64, prayTime *PrayerLocale) []float64 {
 	var nightTime = timeDifference(times[4], times[1])
-	var fajrDiff = nightPortion(methodParams[prayTime.PrayerCalcMethod][0]*nightTime, prayTime)
+	var fajrDiff = nightPortion(methodParams[prayTime.PrayerCalcMethod][0], prayTime) * nightTime
 
 	if math.IsNaN(times[0]) || timeDifference(times[0], times[1]) > fajrDiff {
 		times[0] = times[1] - fajrDiff

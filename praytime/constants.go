@@ -16,6 +16,17 @@ const SUNSET = "sunset"
 const MAGHRIB string = "maghrib"
 const ISHA string = "isha"
 
+//Enumeration of prayer names with their corresponding element IDs in praytime.CalculatePrayerTimes
+const (
+	FAJR_TIME    = 0
+	SUNRISE_TIME = 1
+	DHUHR_TIME   = 2
+	ASR_TIME     = 3
+	SUNSET_TIME  = 4
+	MAGHRIB_TIME = 5
+	ISHA_TIME    = 6
+)
+
 //Location based prayer calculation methods
 const JAFARI int = 0
 const KARACHI int = 1

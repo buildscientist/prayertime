@@ -3,6 +3,10 @@ PrayTime is a Go based library that calculates Muslim prayer times occurring 5 t
 
 Full details as to the overall prayer calculation algorithm are available on the [Praytimes.org](http://praytimes.org/calculation) site.
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/637402/31003219-522ec6a0-a4a3-11e7-9b21-7f2799e8ad97.png">
+<img src="https://user-images.githubusercontent.com/637402/31003218-522bbbae-a4a3-11e7-8af4-f8f35faedce4.png">
+</p>
 
 ---
 ## Prerequisites 

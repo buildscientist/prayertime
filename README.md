@@ -8,10 +8,15 @@ Full details as to the overall prayer calculation algorithm are available on the
 <img src="https://user-images.githubusercontent.com/637402/31003218-522bbbae-a4a3-11e7-8af4-f8f35faedce4.png">
 </p>
 
+## Credit
+Special thanks to Sal Zia of [Maverick & BlueBerry](https://maverickblueberry.com/) for the gopher artwork. Original design credit goes to Renee French.
+
 ---
+
 ## Prerequisites 
 1. Go (v1.7 of above) installed on target workstation.
 1. [GOPATH](https://github.com/golang/go/wiki/Setting-GOPATH) environment variable set correctly.
+
 ---
 ## Installation 
 

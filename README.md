@@ -1,30 +1,27 @@
-# PrayTime
-PrayTime is a Go based library that calculates Muslim prayer times occurring 5 times a day. The library was ported from Hamid Zarrabi-Zadeh and Hussain Ali Khan's [Java](http://praytimes.org/code/git/?a=viewblob&p=PrayTimes&h=093f77d6cc83b53fb12e9900803d5fa75dacd110&hb=HEAD&f=v1/java/PrayTime.java) implementation. 
-
-Full details as to the overall prayer calculation algorithm are available on the [Praytimes.org](http://praytimes.org/calculation) site.
-
 <p align="center">
 <img src="https://user-images.githubusercontent.com/637402/31003219-522ec6a0-a4a3-11e7-9b21-7f2799e8ad97.png">
 <img src="https://user-images.githubusercontent.com/637402/31003218-522bbbae-a4a3-11e7-8af4-f8f35faedce4.png">
 </p>
 
+# PrayTime
+PrayTime is a Go based library that calculates Muslim prayer times occurring 5 times a day. The library was ported from Hamid Zarrabi-Zadeh and Hussain Ali Khan's [Java](http://praytimes.org/code/git/?a=viewblob&p=PrayTimes&h=093f77d6cc83b53fb12e9900803d5fa75dacd110&hb=HEAD&f=v1/java/PrayTime.java) implementation. 
+
+Full details as to the overall prayer calculation algorithm are available on the [Praytimes.org](http://praytimes.org/calculation) site.
+
+
 ## Credit
 Special thanks to Sal Zia of [Maverick & BlueBerry](https://maverickblueberry.com/) for the gopher artwork. Original design credit goes to Renee French.
 
----
 
 ## Prerequisites 
 1. Go (v1.7 of above) installed on target workstation.
 1. [GOPATH](https://github.com/golang/go/wiki/Setting-GOPATH) environment variable set correctly.
 
----
 ## Installation 
 
 ```go
 go get github.com/buildscientist/prayertime 
 ```
-
----
 
 ## API
 The PrayTime Go API is fairly simple to use - the user does not need to understand the underlying calculations to use the library. 
@@ -50,7 +47,6 @@ The other parameters are not required and are preset at instantiation including:
 - AdjustHighLats - set to praytime.NONE by default. 
 - TimeFormat - set to praytime.TIME_12 by default. Displays prayer times in the format of hh:mm suffix 
 
----
 ## Example 
 ```go
 package main 

@@ -58,13 +58,13 @@ import (
 ) 
 
 	_,offset := time.Now().Zone()
-	timezone = float64(offset/3600)
+	timezone := float64(offset/3600)
 
-	var chicago = praytime.New(41.879626, -87.648217,timezone)
-	var chicagoPrayerTime = praytime.CalculatePrayerTimes(&chicago, time.Now())
+	chicago := praytime.New(41.879626, -87.648217,timezone)
+	chicagoPrayerTime := praytime.CalculatePrayerTimes(&chicago, time.Now())
 
 func printPrayerTimes(city string, prayertimes []string) {
- 	var today = time.Now()
+ 	today := time.Now()
 	fmt.Println()
 	fmt.Println("=======" + city + "=======")
 	fmt.Println(today.Month(), today.Day(), today.Year())

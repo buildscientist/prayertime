@@ -3,7 +3,7 @@
 <img src="https://user-images.githubusercontent.com/637402/31003218-522bbbae-a4a3-11e7-8af4-f8f35faedce4.png">
 </p>
 
-# PrayTime [![CircleCI](https://circleci.com/gh/buildscientist/prayertime.svg?style=shield)](https://circleci.com/gh/buildscientist/prayertime) [![Go Report Card](https://goreportcard.com/badge/github.com/buildscientist/prayertime)](https://goreportcard.com/report/github.com/buildscientist/prayertime)
+# PrayTime [![CircleCI](https://circleci.com/gh/buildscientist/prayertime.svg?style=shield)](https://circleci.com/gh/buildscientist/prayertime) [![Go Report Card](https://goreportcard.com/badge/github.com/buildscientist/prayertime)](https://goreportcard.com/report/github.com/buildscientist/prayertime) [![Coverage Status](https://coveralls.io/repos/github/buildscientist/prayertime/badge.svg?branch=master)](https://coveralls.io/github/buildscientist/prayertime?branch=master)
 
 PrayTime is a Go based library that calculates Muslim prayer times occurring 5 times a day. The library was ported from Hamid Zarrabi-Zadeh and Hussain Ali Khan's [Java](http://praytimes.org/code/git/?a=viewblob&p=PrayTimes&h=093f77d6cc83b53fb12e9900803d5fa75dacd110&hb=HEAD&f=v1/java/PrayTime.java) implementation. 
 

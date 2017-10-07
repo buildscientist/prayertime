@@ -57,8 +57,7 @@ import (
      "github.com/buildscientist/prayertime/praytime"
 ) 
 
-	name,offset := time.Now().Zone()
-	name = name 
+	_,offset := time.Now().Zone()
 	timezone = float64(offset/3600)
 
 	var chicago = praytime.New(41.879626, -87.648217,timezone)

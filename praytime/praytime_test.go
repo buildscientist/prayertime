@@ -1,7 +1,13 @@
-package test
+/*
+Copyright 2017
+Author: Youssuf ElKalay
+All rights reserved. Use of this source code is governed by the Apache 2.0 license
+that can be found in the LICENSE file or at http://www.apache.org/licenses/LICENSE-2.0
+*/
+
+package praytime
 
 import (
-	"github.com/buildscientist/prayertime/praytime"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -50,13 +56,13 @@ func TestAdjustHighAltitude(t *testing.T) {
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 
 	for _, tt := range oneSeventhHighLatTests {
-		city := praytime.New(tt.latitude, tt.longitude, tt.timezone)
-		city.PrayerCalcMethod = praytime.MWL
-		city.AdjustHighLats = praytime.ONE_SEVENTH
-		cityPrayerTime := praytime.CalculatePrayerTimes(&city, today)
+		city := New(tt.latitude, tt.longitude, tt.timezone)
+		city.PrayerCalcMethod = MWL
+		city.AdjustHighLats = ONE_SEVENTH
+		cityPrayerTime := CalculatePrayerTimes(&city, today)
 		assert.NotNil(cityPrayerTime)
 		assert.NotEmpty(cityPrayerTime)
-		assert.NotContains(cityPrayerTime, praytime.INVALID_TIME)
+		assert.NotContains(cityPrayerTime, INVALID_TIME)
 		assert.EqualValues(tt.expected, cityPrayerTime)
 	}
 }
@@ -66,11 +72,11 @@ func TestISNAPrayerMethod(t *testing.T) {
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 
 	for _, tt := range isnaPrayerCalcMethodTests {
-		city := praytime.New(tt.latitude, tt.longitude, tt.timezone)
-		cityPrayerTime := praytime.CalculatePrayerTimes(&city, today)
+		city := New(tt.latitude, tt.longitude, tt.timezone)
+		cityPrayerTime := CalculatePrayerTimes(&city, today)
 		assert.NotNil(cityPrayerTime)
 		assert.NotEmpty(cityPrayerTime)
-		assert.NotContains(cityPrayerTime, praytime.INVALID_TIME)
+		assert.NotContains(cityPrayerTime, INVALID_TIME)
 		assert.EqualValues(tt.expected, cityPrayerTime)
 	}
 
@@ -81,12 +87,12 @@ func TestMWLPrayerMethod(t *testing.T) {
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 
 	for _, tt := range mwlPrayerCalcMethodTests {
-		city := praytime.New(tt.latitude, tt.longitude, tt.timezone)
-		city.PrayerCalcMethod = praytime.MWL
-		cityPrayerTime := praytime.CalculatePrayerTimes(&city, today)
+		city := New(tt.latitude, tt.longitude, tt.timezone)
+		city.PrayerCalcMethod = MWL
+		cityPrayerTime := CalculatePrayerTimes(&city, today)
 		assert.NotNil(cityPrayerTime)
 		assert.NotEmpty(cityPrayerTime)
-		assert.NotContains(cityPrayerTime, praytime.INVALID_TIME)
+		assert.NotContains(cityPrayerTime, INVALID_TIME)
 		assert.EqualValues(tt.expected, cityPrayerTime)
 	}
 
@@ -98,13 +104,13 @@ func TestMakkahPrayerMethod(t *testing.T) {
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 	expectedPrayerTime := []string{"05:00 AM", "06:16 AM", "12:11 PM", "03:34 PM", "06:06 PM", "06:06 PM", "07:36 PM"}
 
-	jeddah := praytime.New(21.285407, 39.237551, 3)
-	jeddah.PrayerCalcMethod = praytime.MAKKAH
-	jeddahPrayerTime := praytime.CalculatePrayerTimes(&jeddah, today)
+	jeddah := New(21.285407, 39.237551, 3)
+	jeddah.PrayerCalcMethod = MAKKAH
+	jeddahPrayerTime := CalculatePrayerTimes(&jeddah, today)
 
 	assert.NotNil(jeddahPrayerTime)
 	assert.NotEmpty(jeddahPrayerTime)
-	assert.NotContains(jeddahPrayerTime, praytime.INVALID_TIME)
+	assert.NotContains(jeddahPrayerTime, INVALID_TIME)
 	assert.EqualValues(expectedPrayerTime, jeddahPrayerTime)
 
 }
@@ -115,14 +121,14 @@ func TestKarachiPrayerMethod(t *testing.T) {
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 	expectedPrayerTime := []string{"05:10 AM", "06:26 AM", "12:20 PM", "04:35 PM", "06:14 PM", "06:14 PM", "07:30 PM"}
 
-	karachi := praytime.New(24.861462, 67.009939, 5)
-	karachi.PrayerCalcMethod = praytime.KARACHI
-	karachi.AsrJuristic = praytime.HANAFI
-	karachiPrayerTime := praytime.CalculatePrayerTimes(&karachi, today)
+	karachi := New(24.861462, 67.009939, 5)
+	karachi.PrayerCalcMethod = KARACHI
+	karachi.AsrJuristic = HANAFI
+	karachiPrayerTime := CalculatePrayerTimes(&karachi, today)
 
 	assert.NotNil(karachiPrayerTime)
 	assert.NotEmpty(karachiPrayerTime)
-	assert.NotContains(karachiPrayerTime, praytime.INVALID_TIME)
+	assert.NotContains(karachiPrayerTime, INVALID_TIME)
 	assert.EqualValues(expectedPrayerTime, karachiPrayerTime)
 
 }
@@ -133,13 +139,13 @@ func TestEgyptPrayerMethod(t *testing.T) {
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 	expectedPrayerTime := []string{"04:25 AM", "05:51 AM", "11:43 AM", "03:04 PM", "05:34 PM", "05:34 PM", "06:52 PM"}
 
-	cairo := praytime.New(30.044420, 31.235712, 2)
-	cairo.PrayerCalcMethod = praytime.EGYPT
-	cairoPrayerTime := praytime.CalculatePrayerTimes(&cairo, today)
+	cairo := New(30.044420, 31.235712, 2)
+	cairo.PrayerCalcMethod = EGYPT
+	cairoPrayerTime := CalculatePrayerTimes(&cairo, today)
 
 	assert.NotNil(cairoPrayerTime)
 	assert.NotEmpty(cairoPrayerTime)
-	assert.NotContains(cairoPrayerTime, praytime.INVALID_TIME)
+	assert.NotContains(cairoPrayerTime, INVALID_TIME)
 	assert.EqualValues(expectedPrayerTime, cairoPrayerTime)
 
 }
@@ -149,13 +155,13 @@ func TestNoSuffix(t *testing.T) {
 
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 
-	city := praytime.New(30.044420, 31.235712, 2)
-	city.TimeFormat = praytime.TIME_12_NO_SUFFIX
-	cityPrayerTime := praytime.CalculatePrayerTimes(&city, today)
+	city := New(30.044420, 31.235712, 2)
+	city.TimeFormat = TIME_12_NO_SUFFIX
+	cityPrayerTime := CalculatePrayerTimes(&city, today)
 
 	assert.NotNil(cityPrayerTime)
 	assert.NotEmpty(cityPrayerTime)
-	assert.NotContains(cityPrayerTime, praytime.INVALID_TIME)
+	assert.NotContains(cityPrayerTime, INVALID_TIME)
 	assert.NotContains(cityPrayerTime, "AM")
 	assert.NotContains(cityPrayerTime, "PM")
 }
@@ -165,13 +171,13 @@ func Test24Hour(t *testing.T) {
 
 	today := time.Date(2017, 10, 6, 0, 0, 0, 0, time.Local)
 
-	city := praytime.New(30.044420, 31.235712, 2)
-	city.TimeFormat = praytime.TIME_24
-	cityPrayerTime := praytime.CalculatePrayerTimes(&city, today)
+	city := New(30.044420, 31.235712, 2)
+	city.TimeFormat = TIME_24
+	cityPrayerTime := CalculatePrayerTimes(&city, today)
 
 	assert.NotNil(cityPrayerTime)
 	assert.NotEmpty(cityPrayerTime)
-	assert.NotContains(cityPrayerTime, praytime.INVALID_TIME)
+	assert.NotContains(cityPrayerTime, INVALID_TIME)
 	assert.NotContains(cityPrayerTime, "AM")
 	assert.NotContains(cityPrayerTime, "PM")
 

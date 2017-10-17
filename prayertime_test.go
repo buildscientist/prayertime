@@ -5,7 +5,7 @@ All rights reserved. Use of this source code is governed by the Apache 2.0 licen
 that can be found in the LICENSE file or at http://www.apache.org/licenses/LICENSE-2.0
 */
 
-package praytime
+package prayertime
 
 import (
 	"github.com/stretchr/testify/assert"

@@ -5,7 +5,7 @@ All rights reserved. Use of this source code is governed by the Apache 2.0 licen
 that can be found in the LICENSE file or at http://www.apache.org/licenses/LICENSE-2.0
 */
 
-package praytime
+package prayertime
 
 //Prayer Times
 const FAJR string = "fajr"
@@ -16,7 +16,7 @@ const SUNSET = "sunset"
 const MAGHRIB string = "maghrib"
 const ISHA string = "isha"
 
-//Enumeration of prayer names with their corresponding element IDs in praytime.CalculatePrayerTimes
+//Enumeration of prayer names with their corresponding element IDs in CalculatePrayerTimes
 const (
 	FAJR_TIME    = 0
 	SUNRISE_TIME = 1

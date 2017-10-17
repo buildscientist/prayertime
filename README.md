@@ -55,14 +55,14 @@ package main
 import (
      "fmt"
      "time"
-     "github.com/buildscientist/prayertime/praytime"
+     "github.com/buildscientist/prayertime"
 ) 
 
 	_,offset := time.Now().Zone()
 	timezone := float64(offset/3600)
 
-	chicago := praytime.New(41.879626, -87.648217,timezone)
-	chicagoPrayerTime := praytime.CalculatePrayerTimes(&chicago, time.Now())
+	chicago := prayertime.New(41.879626, -87.648217,timezone)
+	chicagoPrayerTime := prayertime.CalculatePrayerTimes(&chicago, time.Now())
 
 func printPrayerTimes(city string, prayertimes []string) {
  	today := time.Now()
@@ -71,7 +71,7 @@ func printPrayerTimes(city string, prayertimes []string) {
 	fmt.Println(today.Month(), today.Day(), today.Year())
 
 	for x := 0; x < len(prayertimes); x++ {
-		fmt.Println(praytime.PrayerTimeNames[x] + " - " + prayertimes[x])
+		fmt.Println(prayertime.PrayerTimeNames[x] + " - " + prayertimes[x])
 	}
 
 }

@@ -5,7 +5,7 @@
 
 # PrayTime [![CircleCI](https://circleci.com/gh/buildscientist/prayertime.svg?style=shield)](https://circleci.com/gh/buildscientist/prayertime) [![Go Report Card](https://goreportcard.com/badge/github.com/buildscientist/prayertime)](https://goreportcard.com/report/github.com/buildscientist/prayertime) [![Coverage Status](https://coveralls.io/repos/github/buildscientist/prayertime/badge.svg?branch=master)](https://coveralls.io/github/buildscientist/prayertime?branch=master)
 
-PrayTime is a Go based library that calculates Muslim prayer times occurring 5 times a day. The library was ported from Hamid Zarrabi-Zadeh and Hussain Ali Khan's [Java](http://praytimes.org/code/git/?a=viewblob&p=PrayTimes&h=093f77d6cc83b53fb12e9900803d5fa75dacd110&hb=HEAD&f=v1/java/PrayTime.java) implementation. 
+PrayerTime is a Go based library that calculates Muslim prayer times occurring 5 times a day. The library was ported from Hamid Zarrabi-Zadeh and Hussain Ali Khan's [Java](http://praytimes.org/code/git/?a=viewblob&p=PrayTimes&h=093f77d6cc83b53fb12e9900803d5fa75dacd110&hb=HEAD&f=v1/java/PrayTime.java) implementation. 
 
 Full details as to the overall prayer calculation algorithm are available on the [Praytimes.org](http://praytimes.org/calculation) site.
 
@@ -25,7 +25,7 @@ go get github.com/buildscientist/prayertime
 ```
 
 ## API
-The PrayTime Go API is fairly simple to use - the user does not need to understand the underlying calculations to use the library. 
+The PrayerTime Go API is fairly simple to use - the user does not need to understand the underlying calculations to use the library. 
 
 The PrayerLocale struct is defined as follows: 
 
@@ -43,10 +43,10 @@ It requires 3 parameters:
 
 The other parameters are not required and are preset at instantiation including: 
 
-- PrayerCalcMethod - set to praytime.ISNA
-- AsrJuristic - set to praytime.SHAFII by default
-- AdjustHighLats - set to praytime.NONE by default. 
-- TimeFormat - set to praytime.TIME_12 by default. Displays prayer times in the format of hh:mm suffix 
+- PrayerCalcMethod - set to prayertime.ISNA
+- AsrJuristic - set to prayertime.SHAFII by default
+- AdjustHighLats - set to prayertime.NONE by default. 
+- TimeFormat - set to prayertime.TIME_12 by default. Displays prayer times in the format of hh:mm suffix 
 
 ## Example 
 ```go

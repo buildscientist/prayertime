@@ -50,22 +50,26 @@ The other parameters are not required and are preset at instantiation including:
 
 ## Example 
 ```go
-package main 
+package main
 
 import (
-     "fmt"
-     "time"
-     "github.com/buildscientist/prayertime"
-) 
+	"fmt"
+	"github.com/buildscientist/prayertime"
+	"time"
+)
 
-	_,offset := time.Now().Zone()
-	timezone := float64(offset/3600)
+func main() {
+	location, _ := time.LoadLocation("America/Chicago")
+	_, offset := time.Now().In(location).Zone()
+	timezone := float64(offset / 3600)
 
-	chicago := prayertime.New(41.879626, -87.648217,timezone)
+	chicago := prayertime.New(41.879626, -87.648217, timezone)
 	chicagoPrayerTime := prayertime.CalculatePrayerTimes(&chicago, time.Now())
+	printPrayerTimes("Chicago", chicagoPrayerTime)
+}
 
 func printPrayerTimes(city string, prayertimes []string) {
- 	today := time.Now()
+	today := time.Now()
 	fmt.Println()
 	fmt.Println("=======" + city + "=======")
 	fmt.Println(today.Month(), today.Day(), today.Year())
